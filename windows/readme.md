@@ -35,7 +35,7 @@ Unblock-File -Path .\example_script.ps1
 - System Files auto clean. (in bootstrapper)
 - Recheck telemetry
 - Disable telemetery using tools found on github(open source tools which are well maintained (find on youtube, google, etc)). Ex: **thisiswin11**.<br>
-- enable hyper-v, wsl with ps
+- enable hyper-v, windows sandbox and wsl, wsa with ps
 - restart pc
 
 ### Configuring windows terminal, vs code, nvim, git bash
