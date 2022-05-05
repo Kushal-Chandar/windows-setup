@@ -2,7 +2,7 @@
 $tempfolders = @(
     "C:\Windows\Temp\*",
     "C:\Windows\Prefetch\*", 
-    "C:\Users\*\Appdata\Local\Temp\*"
+    "$env:TEMP\*"
 )
 Remove-Item $tempfolders -force -recurse -ErrorAction SilentlyContinue
 #endregion

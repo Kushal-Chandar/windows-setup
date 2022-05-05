@@ -5,7 +5,7 @@ Function Add-CustomTask {
 
     $trigger = New-ScheduledTaskTrigger -Daily -DaysInterval $days -At '5:30 AM'
 
-    $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest -LogonType S4U
+    $principal = New-ScheduledTaskPrincipal -UserId "$env:USERNAME" -RunLevel Highest 
 
     $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries `
         -DontStopIfGoingOnBatteries -DontStopOnIdleEnd `
@@ -23,9 +23,9 @@ Function Get-TaskName {
     $filename = $filename.substring(0, 1).toupper() + $filename.substring(1).tolower()
     return $filename
 }
-
 ###__main()__###
 
+Write-Progress -Id 2 -Activity "Setting up cleanup scripts as Scheduled Tasks"
 #region auto clean
 $cleanup_scripts = @( #important to order tasks for foreach loop below
     "temp_files_cleanup.ps1", #runs every day
@@ -39,5 +39,6 @@ foreach ($script in $cleanup_scripts) {
     Add-CustomTask -taskname $taskname -taskpath $taskpath -days $days -script $script
     $days = $days + 30 #adding a month for next task
 }
+Write-Host  "Executing cleanup scripts from Scheduled Tasks"
 Get-ScheduledTask -TaskPath $taskpath | Start-ScheduledTask
 #endregion
