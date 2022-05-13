@@ -1,6 +1,6 @@
 Function Add-CustomTask {
     Param ($taskname, $taskpath, $days, $script)
-    $action = New-ScheduledTaskAction -Execute 'pwsh.exe' -WorkingDirectory "$PSScriptRoot\cleanup_scripts\" `
+    $action = New-ScheduledTaskAction -Execute 'pwsh.exe' -WorkingDirectory "$PSScriptRoot\maintenance\" `
         -Argument "-WindowStyle Minimized -ExecutionPolicy Bypass -NoProfile -NoLogo -NonInteractive -File $script"
 
     $trigger = New-ScheduledTaskTrigger -Daily -DaysInterval $days -At '5:30 AM'
