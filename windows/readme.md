@@ -2,14 +2,16 @@
 
 ### Initial steps
 
-- Partition Disks C: system drive 150 - 200 gb, D:(Dev) 200GB+ , S:() G:(Games) 400GB+ ,
-- Do a windows update and some selective optional updates.<br>
-- Powershell Set-executionpolicy to 'RemoteSigned'.<br>
+- Partition Disks C: system drive 150 - 200 gb, D:(Dev) 200GB+ ,P:(Programs) 100GB+ G:(Games) 400GB+ ,
+- Do a windows update and some selective optional updates.
+- Powershell Set-executionpolicy to 'RemoteSigned'.
   > Run windows powershell as admin and copy code from below
 
 ```ps
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 ```
+
+- Install winget from <a href=""></a>
 
 ### Telemetery, Debloating and boot strapping
 
@@ -35,7 +37,7 @@ Unblock-File -Path .\example_script.ps1
 
 ### Configuring windows terminal, vs code, nvim, git bash
 
-Make ps scripts to copy contents of these files from git hub<br>
+Make ps scripts to copy contents of these files from git hub (symlinks)<br>
 export import powertoys profile<br>
 
 # switch pc script
@@ -46,6 +48,7 @@ run winget list and create a file of all programs
 ### Gaming performance
 
 Mouse settings -> 6 / 11
+Uncheck precision
 Do a motherboard bios update (if provided by manufacturer).<br>
 Do a graphics card bios update (if provided by manufacturer).<br>
 Do a graphics card driver update.<br>
