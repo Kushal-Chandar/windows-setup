@@ -8,7 +8,6 @@ Checkpoint-Computer -Description "Before bootstrapper.ps1 was run" -RestorePoint
 Get-ComputerRestorePoint
 
 $scripts = @{
-    "Setting up winget"               = "winget_init.ps1"
     "Adjusting settings and features" = "settings_and_features.ps1"
 }
 $progress = 1

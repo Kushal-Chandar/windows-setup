@@ -1,1 +1,0 @@
-& $PSScriptRoot\winget_setup\settings_winget.ps1
