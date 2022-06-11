@@ -27,6 +27,7 @@ $VarWinget = New-Object System.Collections.Generic.List[System.Object]
 $VarWingetInfo = New-Object System.Collections.Generic.List[System.Object]
 for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
     $XamlContent = $WingetPackages[$i]
+    $XamlContent
     $Var = "W$i"
     $VarInfo = "WInfo$i"
     $WingetPackagesXaml += "<StackPanel Orientation=`"Horizontal`">`n<Button x:Name=`"$VarInfo`" Style=`"{StaticResource AppsInit.InfoButtonStyle}`" ToolTip=`"Click for &quot;$XamlContent&quot; package information`"/>`n<CheckBox x:Name=`"$Var`" Content=`"$XamlContent`" Margin=`"5, 0`"/>`n</StackPanel>`n"
@@ -35,16 +36,16 @@ for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
 }
 
 #region read from file
+$AppxReadCheck = ""
 $AppxPackagesBase = Get-Content appx_packages_base.json | ConvertFrom-Json
 $AppxPackageCheck = $AppxPackages | Where-Object { $AppxPackagesBase -Contains $_.Name } | ForEach-Object { $AppxPackages.IndexOf($_) }
-$AppxReadCheck = ""
 foreach ($i in $AppxPackageCheck) {
     $Button = "AppsInitA$i"
     $PowerShellButtons = "`$$Button.IsChecked = `$true`n"
     $AppxReadCheck += $PowerShellButtons
 }
 $AppxProvisionedPackagesBase = Get-Content appx_provisioned_packages_base.json | ConvertFrom-Json
-$AppxProvisionedPackageCheck = $AppxProvisionedPackages | Where-Object { $AppxProvisionedPackagesBase -Contains $_.Name } | ForEach-Object { $AppxProvisionedPackages.IndexOf($_) }
+$AppxProvisionedPackageCheck = $AppxProvisionedPackages | Where-Object { $AppxProvisionedPackagesBase -Contains $_.PackageName } | ForEach-Object { $AppxProvisionedPackages.IndexOf($_) }
 foreach ($i in $AppxProvisionedPackageCheck) {
     $Button = "AppsInitP$i"
     $PowerShellButtons = "`$$Button.IsChecked = `$true`n"
@@ -112,5 +113,5 @@ foreach ($Button in $VarWinget) {
     $CheckBoxes += $PowerShellButtons
 }
 
-(Get-Content "add_or_remove_apps_template.ps1" -Raw) -replace '# Read from file checkboxes', $AppxReadCheck -replace '# All appx apps check boxes', $AllAppxPackagesCheckboxes -replace '# All appx provisioned apps check boxes', $AllAppxProvisionedPackagesCheckboxes -replace '# Save checked appx package to file', $AppxPackagesCheckboxesSaveToFile -replace '# Save checked appx provisioned package to file', $AppxProvisionedPackagesCheckboxesSaveToFile -replace '# InfoButtons', $InfoButtons -replace '# CheckBoxes', $CheckBoxes | Set-Content -Path "add_or_remove_apps.ps1"
-((Get-Content -Path "$PSScriptRoot\MainWindow_Template.xaml" -Raw) -replace '<!-- Remove Appx Packages -->', $AppxPackagesXaml -replace '<!-- Remove Appx Provisioned Packages -->', $AppxProvisionedPackagesXaml -replace '<!-- Install Winget Packages -->', $WingetPackagesXaml) | Set-Content -Path "$PSScriptRoot\MainWindow.xaml"
+(Get-Content "add_or_remove_apps.ps1" -Raw) -replace '# Read from file checkboxes', $AppxReadCheck -replace '# All appx apps check boxes', $AllAppxPackagesCheckboxes -replace '# All appx provisioned apps check boxes', $AllAppxProvisionedPackagesCheckboxes -replace '# Save checked appx package to file', $AppxPackagesCheckboxesSaveToFile -replace '# Save checked appx provisioned package to file', $AppxProvisionedPackagesCheckboxesSaveToFile -replace '# InfoButtons', $InfoButtons -replace '# CheckBoxes', $CheckBoxes | Set-Content -Path "add_or_remove_apps_temp.ps1"
+((Get-Content -Path "$PSScriptRoot\MainWindow.xaml" -Raw) -replace '<!-- Remove Appx Packages -->', $AppxPackagesXaml -replace '<!-- Remove Appx Provisioned Packages -->', $AppxProvisionedPackagesXaml -replace '<!-- Install Winget Packages -->', $WingetPackagesXaml) | Set-Content -Path "$PSScriptRoot\MainWindow_temp.xaml"
