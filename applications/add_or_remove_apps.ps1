@@ -1,16 +1,64 @@
 Add-Type -AssemblyName PresentationFramework
 . .\variables.ps1
-$inputXML = Get-Content "MainWindow_temp.xaml"
+$inputXML = Get-Content "MainWindow.xaml"
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [xml]$XAML = $inputXML
 $XAMLReader = New-Object System.Xml.XmlNodeReader $XAML
 $MainWindow = [Windows.Markup.XamlReader]::Load($XAMLReader)
 
+$Script:CounterAppx = 0
+$Script:CounterAppxProvisioned = 0
 
+# function AppxButtonUI {
+#     begin { <statement list> }
+#     process { <statement list> }
+#     end {
+#         $NewStackPanel = New-Object System.Windows.Controls.StackPanel
+#         $NewStackPanel.Orientation = "Horizonatal"
+#         $NewInfoButton = New-Object  System.Windows.Controls.Button
+#         $NewInfoButton.Name = "AppsInitAInfo$CounterAppx"
+#         $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
+#         $NewInfoButton.ToolTip = "Click for &quot;$AppxPackages`[$CounterAppx`]&quot; package information"
+#         $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
+#         $NewCheckBox.Name = "AppsInitA$CounterAppx"
+#         $NewCheckBox.Margin = "5, 0"
+#         $NewCheckBox.Content = "$AppxPackages`[$CounterAppx`]"
+#         $AppxPackagesXaml += "<StackPanel Orientation=`"Horizontal`">`n<Button  Style=`"{StaticResource }`" ToolTip=`/>`n<CheckBox x:Name=`"$Var`" Content=`"$XamlContent`" Margin=`"5, 0`"/>`n</StackPanel>`n"
+#         $NewStackPanel.AddChild($NewInfoButton)
+#         $NewStackPanel.AddChild($NewCheckBox)
+#         $AppsInitStackPanelAppx.AddChild($NewStackPanel)
+#     }
+# }
 $XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name "AppsInit$($_.Name)" -Value $MainWindow.FindName($_.Name) }
 Get-Variable Apps*
 
-# Read from file checkboxes
+$AppxPackagesInfo = @{}
+$AppxPackagesCheckBoxes = New-Object System.Collections.Generic.List[System.Windows.Controls.CheckBox]
+foreach ($AppxPackage in $AppxPackages) {
+    $AppxPackageDisplay = ($AppxPackage.Name + "-v" + $AppxPackage.Version + "-" + ($AppxPackage.Architecture.ToString().ToLower()))
+    $NewStackPanel = New-Object System.Windows.Controls.StackPanel
+    $NewStackPanel.Orientation = "Horizontal"
+    $NewInfoButton = New-Object  System.Windows.Controls.Button
+    $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
+    $NewInfoButton.ToolTip = "Click for &quot;$AppxPackageDisplay&quot; package information"
+    $NewInfoButton.Name = "AppsInitAInfo$CounterAppx"
+    $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
+    $NewCheckBox.IsChecked = ($AppxPackages[$CounterAppx]).IsChecked
+    $NewCheckBox.Cursor = "Hand"
+    # $NewCheckBox.Name = "AppsInitA$CounterAppx"
+    $NewCheckBox.Margin = "5, 0"
+    $NewCheckBox.Content = "$AppxPackageDisplay"
+    $AppxPackagesCheckBoxes.Add($NewCheckBox)
+    $NewStackPanel.AddChild($NewInfoButton)
+    $NewStackPanel.AddChild($NewCheckBox)
+    $AppsInitStackPanelAppx.AddChild($NewStackPanel)
+    $CounterAppx++
+}
+$AppxPackagesCheckBoxes = $AppxPackagesCheckBoxes.ToArray()
+
+
+
+
 
 $global:state1 = $true
 $AppsInitCheckAppxApps.Add_Click({
@@ -22,7 +70,7 @@ $AppsInitSaveAppxPackagestoFile.Add_Click({
         $AppxPackagesRemoveFile = New-Object System.Collections.Generic.List[System.Object]
     
         # Save checked appx package to file
-
+    
         $AppxPackagesRemoveFile.ToArray() | Sort-Object -Unique | ConvertTo-Json | Set-Content -Path appx_packages_base.json
     })
     
@@ -73,26 +121,26 @@ $AppsInitExecute.Add_Click({
 
 $MainWindow.ShowDialog() | Out-Null
 
-#region winget uninstall
-Get-Content "winget_uninstall_apps.json" | Set-Content "winget_uninstall_apps_temp.json"
-try {
-    Start-Process notepad -ArgumentList "winget_uninstall_apps_temp.json" -Wait
-}
-catch {
-    Write-Host "NotePad was not found.`nOpen`"$PSScriptRoot\winget_uninstall_apps_temp.json`" and add winget package ids to uninstall.`nIf you want an item to say on the list after the script, edit open `"$PSScriptRoot\winget_uninstall_apps.json`" and add package id" -ForegroundColor Yellow
-}
+# #region winget uninstall
+# Get-Content "winget_uninstall_apps.json" | Set-Content "winget_uninstall_apps_temp.json"
+# try {
+#     Start-Process notepad -ArgumentList "winget_uninstall_apps_temp.json" -Wait
+# }
+# catch {
+#     Write-Host "NotePad was not found.`nOpen`"$PSScriptRoot\winget_uninstall_apps_temp.json`" and add winget package ids to uninstall.`nIf you want an item to say on the list after the script, edit open `"$PSScriptRoot\winget_uninstall_apps.json`" and add package id" -ForegroundColor Yellow
+# }
 
-$WingetRemovePackages = ((Get-Content winget_uninstall_apps_temp.json -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
-if ($WingetRemovePackages.Count -le 0) {
-    Write-Host "No Packages were found." -ForegroundColor Yellow
-}
-else {
-    Write-Host "Packages Found."
-}
-foreach ($package in $WingetRemovePackages) {
-    winget uninstall --id "$package"
-}
-#endregion
+# $WingetRemovePackages = ((Get-Content winget_uninstall_apps_temp.json -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
+# if ($WingetRemovePackages.Count -le 0) {
+#     Write-Host "No Packages were found." -ForegroundColor Yellow
+# }
+# else {
+#     Write-Host "Packages Found."
+# }
+# foreach ($package in $WingetRemovePackages) {
+#     winget uninstall --id "$package"
+# }
+# #endregion
 
 #region Startup Apps
 # Start-Process ms-settings:startupapps
