@@ -32,7 +32,6 @@ $Script:CounterAppxProvisioned = 0
 $XAML.SelectNodes("//*[@Name]") | ForEach-Object { Set-Variable -Name "AppsInit$($_.Name)" -Value $MainWindow.FindName($_.Name) }
 Get-Variable Apps*
 
-$AppxPackagesInfo = @{}
 $AppxPackagesCheckBoxes = New-Object System.Collections.Generic.List[System.Windows.Controls.CheckBox]
 foreach ($AppxPackage in $AppxPackages) {
     $AppxPackageDisplay = ($AppxPackage.Name + "-v" + $AppxPackage.Version + "-" + ($AppxPackage.Architecture.ToString().ToLower()))
@@ -41,11 +40,19 @@ foreach ($AppxPackage in $AppxPackages) {
     $NewInfoButton = New-Object  System.Windows.Controls.Button
     $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
     $NewInfoButton.ToolTip = "Click for &quot;$AppxPackageDisplay&quot; package information"
-    $NewInfoButton.Name = "AppsInitAInfo$CounterAppx"
+    $NewInfoButton.Add_Click({
+            $AppxPackage | Out-File "$env:TEMP\app_info.txt"
+            $Command = {
+                Get-Content "$env:TEMP\app_info.txt"
+                Remove-Item "$env:TEMP\app_info.txt" -Force
+                Write-Host "Press _Enter_ to exit."
+                Read-Host
+            }
+            Start-Process powershell -ArgumentList "-NoExit", "-Command &{ $Command }"
+        }.GetNewClosure())
     $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
     $NewCheckBox.IsChecked = ($AppxPackages[$CounterAppx]).IsChecked
     $NewCheckBox.Cursor = "Hand"
-    # $NewCheckBox.Name = "AppsInitA$CounterAppx"
     $NewCheckBox.Margin = "5, 0"
     $NewCheckBox.Content = "$AppxPackageDisplay"
     $AppxPackagesCheckBoxes.Add($NewCheckBox)

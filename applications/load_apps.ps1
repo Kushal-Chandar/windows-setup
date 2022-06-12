@@ -35,24 +35,6 @@ for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
     $VarWingetInfo.Add("AppsInit" + $VarInfo)
 }
 
-#region read from file
-$AppxReadCheck = ""
-$AppxPackagesBase = Get-Content appx_packages_base.json | ConvertFrom-Json
-$AppxPackageCheck = $AppxPackages | Where-Object { $AppxPackagesBase -Contains $_.Name } | ForEach-Object { $AppxPackages.IndexOf($_) }
-foreach ($i in $AppxPackageCheck) {
-    $Button = "AppsInitA$i"
-    $PowerShellButtons = "`$$Button.IsChecked = `$true`n"
-    $AppxReadCheck += $PowerShellButtons
-}
-$AppxProvisionedPackagesBase = Get-Content appx_provisioned_packages_base.json | ConvertFrom-Json
-$AppxProvisionedPackageCheck = $AppxProvisionedPackages | Where-Object { $AppxProvisionedPackagesBase -Contains $_.PackageName } | ForEach-Object { $AppxProvisionedPackages.IndexOf($_) }
-foreach ($i in $AppxProvisionedPackageCheck) {
-    $Button = "AppsInitP$i"
-    $PowerShellButtons = "`$$Button.IsChecked = `$true`n"
-    $AppxReadCheck += $PowerShellButtons
-}
-#endregion
-
 $AllAppxPackagesCheckboxes = ""
 foreach ($Button in $VarAppx) {
     $PowerShellButtons = "`$$Button.IsChecked = `$state1`n"
