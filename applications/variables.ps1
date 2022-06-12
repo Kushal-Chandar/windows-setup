@@ -14,3 +14,4 @@ foreach ($property in $WingetPackagesJson.PSObject.Properties) {
     $WingetHashTable[$property.Name] = $property.Value
 }
 $WingetPackages = $WingetHashTable.keys.ForEach('ToString')
+$WingetHashTable

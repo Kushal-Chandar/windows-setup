@@ -220,6 +220,11 @@ foreach ($Group in $Groups) {
 }
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -PropertyType DWord -Value 0 -Force | Out-Null
 New-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0 -Force | Out-Null
+
+If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore")) {
+    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Force | Out-Null
+}
+New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Type DWord -Name "AutoDownload" -Value 2 -Force | Out-Null  # prevents auto update
 #endregion
 
 #region Classic Context Menu
