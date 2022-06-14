@@ -1,5 +1,18 @@
 Add-Type -AssemblyName PresentationFramework
-. .\variables.ps1
+
+$AppxPackages = @(Get-AppxPackage -AllUsers | Where-Object { (($_.IsFramework) -ne $true) -and (($_.NonRemovable) -ne $true) } | Sort-Object -Property Name )  
+$AppxPackages | ForEach-Object { $_ | Add-Member -MemberType NoteProperty -Name "IsChecked" -Value $false }
+$AppxPackagesBase = Get-Content appx_packages_base.json | ConvertFrom-Json
+$AppxPackages | Where-Object { $AppxPackagesBase -Contains $_.Name } | ForEach-Object { $_.IsChecked = $true }
+
+$AppxProvisionedPackages = @(Get-AppxProvisionedPackage -Online | Sort-Object -Property DisplayName)
+$AppxProvisionedPackages | ForEach-Object { $_ | Add-Member -MemberType NoteProperty -Name "IsChecked" -Value $false }
+$AppxProvisionedPackagesBase = Get-Content appx_provisioned_packages_base.json | ConvertFrom-Json
+$AppxProvisionedPackages | Where-Object { $AppxProvisionedPackagesBase -Contains $_.DisplayName } | ForEach-Object { $_.IsChecked = $true }
+
+$WingetPackagesJson = (Get-Content "winget_install_apps.json" -raw) -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
+$WingetPackages = @($WingetPackagesJson.PSObject.Properties | Select-Object Name, Value)
+
 $inputXML = Get-Content "MainWindow.xaml"
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [xml]$XAML = $inputXML
@@ -23,9 +36,7 @@ foreach ($AppxPackage in $AppxPackages) {
     $NewInfoButton.Add_Click({
             $AppxPackageSerial = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([Management.Automation.PSSerializer]::Serialize($AppxPackage)))
             $Command = {
-                Param(
-                    $AppxPackageSerial
-                )
+                Param($AppxPackageSerial)
                 $AppxPackage = [Management.Automation.PSSerializer]::Deserialize([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($AppxPackageSerial)))
                 $AppxPackage
                 Write-Host "Close this window manually or press _Enter_ to close window"
@@ -60,9 +71,7 @@ foreach ($AppxProvisionedPackage in $AppxProvisionedPackages) {
     $NewInfoButton.Add_Click({
             $AppxProvisionedPackageSerial = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([Management.Automation.PSSerializer]::Serialize($AppxProvisionedPackage)))
             $Command = {
-                Param(
-                    $AppxProvisionedPackageSerial
-                )
+                Param($AppxProvisionedPackageSerial)
                 $AppxProvisionedPackage = [Management.Automation.PSSerializer]::Deserialize([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($AppxProvisionedPackageSerial)))
                 $AppxProvisionedPackage
                 Write-Host "Close this window manually or press _Enter_ to close window"
@@ -85,6 +94,32 @@ $AppxProvisionedPackagesCheckBoxes = $AppxProvisionedPackagesCheckBoxes.ToArray(
 $AppxProvisionedPackagesStackPanelVisibility = $AppxProvisionedPackagesStackPanelVisibility.ToArray()
 
 
+$WingetPackagesCheckBoxes = New-Object System.Collections.Generic.List[System.Windows.Controls.CheckBox]
+foreach ($WingetPackage in $WingetPackages) {
+    $NewStackPanel = New-Object System.Windows.Controls.StackPanel
+    $NewStackPanel.Orientation = "Horizontal"
+    $NewInfoButton = New-Object  System.Windows.Controls.Button
+    $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
+    $NewInfoButton.ToolTip = "Click for &quot;$($WingetPackage.Name)&quot; package information"
+    $NewInfoButton.Add_Click({
+            $Command = {
+                Param($WingetPackageId)
+                winget show $WingetPackageId
+                Write-Host "`n`nClose this window manually or press _Enter_ to close window"
+                Read-Host
+            }
+            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & {$Command}", "-WingetPackageId ""$($WingetPackage.Name)"""
+        }.GetNewClosure())
+    $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
+    $NewCheckBox.Cursor = "Hand"
+    $NewCheckBox.Margin = "5, 0"
+    $NewCheckBox.Content = "$($WingetPackage.Name)"
+    $WingetPackagesCheckBoxes.Add($NewCheckBox)
+    $NewStackPanel.AddChild($NewInfoButton)
+    $NewStackPanel.AddChild($NewCheckBox)
+    $AppsInitStackPanelWinget.AddChild($NewStackPanel)
+}
+$WingetPackagesCheckBoxes = $WingetPackagesCheckBoxes.ToArray()
 
 
 $Script:AppxCheckBoxesState = $true
@@ -102,7 +137,8 @@ $AppsInitSaveAppxPackagestoFile.Add_Click({
                 $AppxPackagesRemoveFile.Add($AppxPackages[$i].Name)
             }
         }
-        $AppxJson = @($AppxPackagesRemoveFile.ToArray() | Sort-Object -Unique) # No piping generation null object  for array with no elements -> No array?
+        $AppxPackagesBase | ForEach-Object { $AppxPackagesRemoveFile.Add($_) }
+        $AppxJson = @($AppxPackagesRemoveFile.ToArray() | Sort-Object -Unique) # No piping generation null object for array with no elements -> No array?
         ConvertTo-Json $AppxJson | Set-Content -Path appx_packages_base.json
     })
     
@@ -118,23 +154,35 @@ $AppsInitSaveAppxProvisionedPackagestoFile.Add_Click({
         $AppxProvisionedPackagesRemoveFile = New-Object System.Collections.Generic.List[System.Object]
         for ($i = 0; $i -lt $AppxProvisionedPackagesCheckBoxes.Count; $i++) {
             if ($AppxProvisionedPackagesCheckBoxes[$i].IsChecked -eq $true) {
-                $AppxProvisionedPackagesRemoveFile.Add($AppxProvisionedPackages[$i].PackageName)
+                $AppxProvisionedPackagesRemoveFile.Add($AppxProvisionedPackages[$i].DisplayName)
             }
         }
+        $AppxProvisionedPackagesBase | ForEach-Object { $AppxProvisionedPackagesRemoveFile.Add($_) }
         $AppxProvisionedJson = @($AppxProvisionedPackagesRemoveFile.ToArray() | Sort-Object -Unique)
         ConvertTo-Json $AppxProvisionedJson | Set-Content -Path appx_provisioned_packages_base.json
     })
     
-
 $AppsInitKVM.Add_Click({
-        # KVM setup check boxes
+        for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
+            if (($WingetPackages[$i].Value -eq 0) -or ($WingetPackages[$i].Value -eq 2)) {
+                $WingetPackagesCheckBoxes[$i].IsChecked = $true
+            }
+        }
     })
-
+    
 $AppsInitCoding.Add_Click({
-        # Coding setup checkboxes
+        for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
+            if (($WingetPackages[$i].Value -eq 1) -or ($WingetPackages[$i].Value -eq 2)) {
+                $WingetPackagesCheckBoxes[$i].IsChecked = $true
+            }
+        }
     })
 
-# InfoButtons 
+$AppsInitWingetClear.Add_Click({
+        foreach ($CheckBox in $WingetPackagesCheckBoxes) {
+            $CheckBox.IsChecked = $false
+        }
+    })
 
 $AppsInitExecute.Add_Click({
         $AppxPackagesRemove = New-Object System.Collections.Generic.List[System.Object]
@@ -156,6 +204,13 @@ $AppsInitExecute.Add_Click({
                 $AppxProvisionedPackagesCheckBoxes[$i].IsChecked = $false
             }
         }
+
+        for ($i = 0; $i -lt $WingetPackagesCheckBoxes.Count; $i++) {
+            if ($WingetPackagesCheckBoxes[$i].IsChecked -eq $true) {
+                $WingetPackagesInstall.Add($AppxProvisionedPackages[$i])
+                $WingetPackagesCheckBoxes[$i].IsChecked = $false
+            }
+        }
         
         foreach ( $package in $AppxPackagesRemove ) {
             Write-Host "Trying to remove $($package.PackageFullName)"
@@ -168,40 +223,43 @@ $AppsInitExecute.Add_Click({
                 finally { Write-Host "Done with $($package.PackageFullName)." }
             }
         }
+        Write-Host "Done with removing Appx Packages" -ForegroundColor Yellow
         foreach ( $package in $AppxProvisionedPackagesRemove ) {
             try { $package | Remove-AppxProvisionedPackage -AllUsers -Online -ErrorAction Stop }
             catch { Write-Host "$($package.PackageName) was not found on system." -ForegroundColor Yellow }
         }
+        Write-Host "Done with removing Appx Provisioned Packages" -ForegroundColor Yellow
         foreach ( $package in $WingetPackagesInstall ) {
             winget install --id $package -e -i --accept-source-agreements --accept-package-agreements | Out-Host
         }
+        Write-Host "Done with install Winget Packages" -ForegroundColor Yellow
     })
 
     
 $MainWindow.ShowDialog() | Out-Null
     
-# #region winget uninstall
-# Get-Content "winget_uninstall_apps.json" | Set-Content "winget_uninstall_apps_temp.json"
-# try {
-#     Start-Process notepad -ArgumentList "winget_uninstall_apps_temp.json" -Wait
-# }
-# catch {
-#     Write-Host "NotePad was not found.`nOpen`"$PSScriptRoot\winget_uninstall_apps_temp.json`" and add winget package ids to uninstall.`nIf you want an item to say on the list after the script, edit open `"$PSScriptRoot\winget_uninstall_apps.json`" and add package id" -ForegroundColor Yellow
-# }
-
-# $WingetRemovePackages = ((Get-Content winget_uninstall_apps_temp.json -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
-# if ($WingetRemovePackages.Count -le 0) {
-#     Write-Host "No Packages were found." -ForegroundColor Yellow
-# }
-# else {
-#     Write-Host "Packages Found."
-# }
-# foreach ($package in $WingetRemovePackages) {
-#     winget uninstall --id "$package"
-# }
-# #endregion
+#region winget uninstall
+Get-Content "winget_uninstall_apps.json" | Set-Content "winget_uninstall_apps_temp.json"
+try {
+    Start-Process notepad -ArgumentList "winget_uninstall_apps_temp.json" -Wait -ErrorAction Stop
+}
+catch {
+    Write-Host "NotePad was not found. Try removing remaining packages with winget" -ForegroundColor Yellow
+}
+$WingetRemovePackages = ((Get-Content winget_uninstall_apps_temp.json -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
+if ($WingetRemovePackages.Count -le 0) {
+    Write-Host "No Packages were found in winget_uninstall_apps_temp.json" -ForegroundColor Yellow
+}
+else {
+    Write-Host "$($WingetRemovePackages.Count) packages were found winget_uninstall_apps_temp.json."
+}
+foreach ($package in $WingetRemovePackages) {
+    winget uninstall --id "$package"
+}
+Remove-Item winget_uninstall_apps_temp.json
+#endregion
 
 #region Startup Apps
-# Start-Process ms-settings:startupapps
-# [System.Windows.MessageBox]::Show("Disable: Start up apps") | Out-Null
+Start-Process ms-settings:startupapps
+[System.Windows.MessageBox]::Show("Disable: Start up apps") | Out-Null
 #endregion

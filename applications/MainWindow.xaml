@@ -375,7 +375,7 @@
                         <TextBlock FontSize="14" Width="270" Height="100" Text="Select check boxes to uninstall microsoft packages. This script will find and remove packages from all user accounts. Format: PackageName + '-v' + Version + '-' + Architecture." TextAlignment="Left" TextWrapping="Wrap" HorizontalAlignment="Left"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="40">
                             <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="CheckAppxApps" Height="20" ToolTip="Check or uncheck all boxes" Content="Check All Apps" Margin="5,0,0,0" Width="115"/>
-                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="SaveAppxPackagestoFile" Height="20" ToolTip="Save all checked items to appx_packages_base.json file" Content="Save apps to File" Margin="5,0,0,0" Width="115"/>
+                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="SaveAppxPackagestoFile" Height="20" ToolTip="Save all checked items to appx_packages_base.json file." Content="Add apps to File" Margin="5,0,0,0" Width="115"/>
                         </StackPanel>
 <!-- Remove Appx Packages -->
                     </StackPanel>
@@ -386,7 +386,7 @@
                         <TextBlock FontSize="14" Width="270" Height="100" Text="Select check boxes to remove microsoft packages which are installed when an user account is created. This script will disable automatic installation for Windows Disk Image in your local machine." TextAlignment="Left" TextWrapping="Wrap" HorizontalAlignment="Left"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="40">
                             <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="CheckAppxProvisionedApps" Height="20" ToolTip="Check or uncheckall boxes" Content="Check All Apps" Margin="5,0,0,0" Width="115"/>
-                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="SaveAppxProvisionedPackagestoFile" Height="20" ToolTip="Save all checked items to appx_provisioned_packages_base.json file" Content="Save apps to File" Margin="5,0,0,0" Width="115"/>
+                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="SaveAppxProvisionedPackagestoFile" Height="20" ToolTip="Save all checked items to appx_provisioned_packages_base.json file." Content="Add apps to File" Margin="5,0,0,0" Width="115"/>
                         </StackPanel>
 <!-- Remove Appx Provisioned Packages -->
                     </StackPanel>
@@ -396,8 +396,9 @@
                         <TextBlock FontSize="16" FontWeight="Bold" Width="270" Height="50" Padding="0,5,5,5" Text="Install Winget Packages" TextAlignment="Left" TextWrapping="Wrap" HorizontalAlignment="Left"/>
                         <TextBlock FontSize="14" Width="270" Height="100" Text="Select winget packages based setup. &quot;Coding and general gaming&quot; or &quot;KVM Single GPU Passthrough privacy gaming.&quot; To make part work you need to setup winget_install_apps.json" TextAlignment="Left" TextWrapping="Wrap" HorizontalAlignment="Left"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Height="40">
-                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="KVM" Height="20" ToolTip="Check apps for KVM Privacy Setup" Content="KVM" Margin="5,0,0,0" Width="115"/>
-                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="Coding" Height="20" ToolTip="Check apps for coding and general gaming Setup" Content="Coding" Margin="5,0,0,0" Width="115"/>
+                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="KVM" Height="20" ToolTip="Check apps for KVM Privacy Setup" Content="KVM" Margin="5,0,0,0" Width="77"/>
+                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="Coding" Height="20" ToolTip="Check apps for coding and general gaming Setup" Content="Coding" Margin="5,0,0,0" Width="77"/>
+                            <Button Style="{StaticResource AppsInit.OptionsButtonStyle}" x:Name="WingetClear" Height="20" ToolTip="Clear selection for winget packages" Content="Clear Boxes" Margin="5,0,0,0" Width="77"/>
                         </StackPanel>
 <!-- Install Winget Packages -->
                     </StackPanel>
