@@ -207,7 +207,7 @@ $AppsInitExecute.Add_Click({
 
         for ($i = 0; $i -lt $WingetPackagesCheckBoxes.Count; $i++) {
             if ($WingetPackagesCheckBoxes[$i].IsChecked -eq $true) {
-                $WingetPackagesInstall.Add($AppxProvisionedPackages[$i])
+                $WingetPackagesInstall.Add($WingetPackages[$i].Name)
                 $WingetPackagesCheckBoxes[$i].IsChecked = $false
             }
         }

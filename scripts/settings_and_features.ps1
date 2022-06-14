@@ -11,7 +11,8 @@ $Explorer = @{
     'Start_TrackProgs'   = 0
     'Start_TrackDocs'    = 0
     'TaskbarMn'          = 0
-    'TaskbarDa'          = 0
+    'TaskbarDa'          = 0 # Widgets
+    'Start_Layout'       = 1
 }
 foreach ($property in $Explorer.GetEnumerator()) {
     New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
@@ -91,6 +92,12 @@ foreach ($property in $Mouse.GetEnumerator()) {
 #region Desktop
 New-Itemproperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -PropertyType String -Value 0 -Force | Out-Null
 New-Itemproperty -Path "HKCU:\Control Panel\Desktop" -Name "AutoColorization" -PropertyType DWord -Value 0 -Force | Out-Null
+$Path = "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Stickers"
+If (!(Test-Path $Path)) {
+    New-Item -Path $Path -Force | Out-Null
+    
+}
+New-ItemProperty -Path $Path -Type DWord -Name "EnableStickers" -Value 0 -Force | Out-Null
 #endregion
 
 #region Hibernation
@@ -214,7 +221,7 @@ $Groups = @(
 foreach ($Group in $Groups) {
     $GroupPath = $Path + $Group
     If (!(Test-Path $GroupPath)) {
-        New-Item -Path $GroupPath  -Force | Out-Null
+        New-Item -Path $GroupPath -Force | Out-Null
     }
     New-ItemProperty -Path $GroupPath -Name "Value" -PropertyType String -Value "Deny" -Force | Out-Null
 }
@@ -230,17 +237,46 @@ New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Type DW
 #region Classic Context Menu
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
 If (!(Test-Path $Path)) {
-    New-Item -Path $Path  -Force | Out-Null
+    New-Item -Path $Path -Force | Out-Null
 }
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
 If (!(Test-Path $Path)) {
+    New-Item -Path $Path -Force | Out-Null
+}
+#endregion
+
+#region Browser
+$Path = "HKLM:\SOFTWARE\Policies\Google\Chrome"
+If (!(Test-Path $Path)) {
     New-Item -Path $Path  -Force | Out-Null
+}
+$Google = @{
+    'MetricsReportingEnabled'         = 0
+    'ChromeCleanupReportingEnabled'   = 0
+    'SubscribedContent-353696Enabled' = 0
+}
+foreach ($property in $Google.GetEnumerator()) {
+    New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
+}
+
+$Path = "HKLM:\SOFTWARE\Policies\Mozilla\Firefox"
+If (!(Test-Path $Path)) {
+    New-Item -Path $Path -Force | Out-Null
+}
+$FireFox = @{
+    "DisableTelemetry"           = 1
+    "DisableDefaultBrowserAgent" = 1
+}
+foreach ($property in $FireFox.GetEnumerator()) {
+    New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
 }
 #endregion
 
 Stop-Process -processName: Explorer
 
 #region Features
+Remove-Printer -Name Fax
+Disable-WindowsOptionalFeature -Online -FeatureName "Printing-XPSServices-Features" -NoRestart -WarningAction SilentlyContinue | Out-Null
 $features = @(
     'Microsoft-Hyper-V-All'
     'Microsoft-Hyper-V-Tools-All'
