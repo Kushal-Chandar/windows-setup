@@ -1,10 +1,10 @@
 #Requires -RunAsAdministrator
 
 #region bootstrap windows
-$scriptpath = "$PSScriptRoot\scripts\bootstrapping_scripts"
+$scriptpath = "$PSScriptRoot\scripts"
 
 & $scriptpath\"system_restore_configuration.ps1"
-Checkpoint-Computer -Description "Before bootstrapper.ps1 was run" -RestorePointType "MODIFY_SETTINGS" | Out-Null
+Checkpoint-Computer -Description "Before windows-setup was run" -RestorePointType "MODIFY_SETTINGS" | Out-Null
 Get-ComputerRestorePoint
 
 $scripts = @{
