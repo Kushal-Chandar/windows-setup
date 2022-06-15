@@ -51,6 +51,7 @@ git clone "https://github.com/Kushal-Chandar/.dotfiles.git"
 &nbsp;&nbsp;&nbsp;&nbsp;_MSYS add to path_<br>
 &nbsp;&nbsp;&nbsp;&nbsp;_Prompt when installing google drive_<br>
 
+- add host file (winows spyblocker ?)
 - restart pc
 - import trillium notes from google drive
 
