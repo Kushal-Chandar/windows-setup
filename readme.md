@@ -1,6 +1,8 @@
 ## What to do after a fresh install of windows
 
-### Initial steps
+### Prerequisites
+
+#### windows stuff
 
 - Partition Disks C:(Windows) 150+GB, D:(Dev) 200GB+, P:(Programs) 100GB+, G:(Games) 400GB+
 - Do a windows update and some selective optional updates.
@@ -11,28 +13,45 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 ```
 
-- Test winget install
-- Install winget from <a href="https://github.com/microsoft/winget-cli/releases/latest">Latest Winget</a>
+#### Install winget
+
+- Update AppInstaller from Microsoft Store
+- Test winget
+
+```ps
+winget -?
+```
+
+- Install winget from github: <a href="https://github.com/microsoft/winget-cli/releases/latest">Latest release</a>
+
+#### Install Git
+
+- Install git for windows
+
+```ps
+winget install --id Git.Git -e -i --accept-source-agreements --accept-package-agreements
+```
+
+#### Additional steps for me (Ignore)
+
+- load winget and git configuration
+
+```ps
+cd ~
+git clone "https://github.com/Kushal-Chandar/.dotfiles.git"
+~\.dotfiles\winget\deploy.ps1
+~\.dotfiles\git\deploy.ps1
+```
 
 ### Telemetery, Debloating and boot strapping
 
-> **_NOTE:_** Read scripts, and make sure they are safe and unblock them without changing execution policy. Example Below
+&nbsp;&nbsp;&nbsp;&nbsp;_Install git in its default path_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_Install powershell in its default path_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_Install Rest in P: drive_ -> use -i as -l is unreliable<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_MSYS add to path_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;_Prompt when installing google drive_<br>
 
-```ps
-Unblock-File -Path .\example_script.ps1
-.\example_script.ps1
-```
-
-- Run a ps script to list all apps provided by winget in a GUI, which helps construct a winget script for selected apps that i want to uninstall.<br>
-- Install previous apps using winget and a list with ps script (through a list of required apps).<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;_Install git in its default path_<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;_Install powershell in its default path_<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;_Install Rest in D: drive_ -> use -i as -l is unreliable<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;_MSYS add to path_<br>
-  &nbsp;&nbsp;&nbsp;&nbsp;_Prompt when installing google drive_<br>
-- check startup apps
 - restart pc
-- update store apps
 - import trillium notes from google drive
 
 ### Configuring windows terminal, vs code, nvim, git bash
@@ -55,3 +74,7 @@ Download and configure throttlestop.<br>
 Download and configure msi.<br>
 Youtube pc optimisation guide (pc power plan editing).<br>
 Youtube guide for nvidia/amd control panel settings.<br>
+
+```
+
+```

@@ -215,17 +215,17 @@ $AppsInitExecute.Add_Click({
         foreach ( $package in $AppxPackagesRemove ) {
             Write-Host "Trying to remove $($package.PackageFullName)"
             Set-NonRemovableAppsPolicy -Online -PackageFamilyName $package.PackageFamilyName -NonRemovable 0 | Out-Host
-            try { Remove-AppxPackage -Package $package -AllUsers -ErrorAction Stop }
-            catch { Get-AppxPackage -PackageTypeFilter Main, Bundle, Resource -AllUsers | Where-Object { $_.Name -eq $package.Name }  | Remove-AppxPackage -Allusers }
+            try { $package | Remove-AppxPackage -AllUsers | Out-Host -ErrorAction Stop }
+            catch { Get-AppxPackage -PackageTypeFilter Main, Bundle, Resource -AllUsers | Where-Object { $_.Name -eq $package.Name }  | Remove-AppxPackage -Allusers | Out-Host }
             finally { 
-                try { Remove-AppxPackage -Package $package -ErrorAction Stop }
+                try { $package | Remove-AppxPackage | Out-Host -ErrorAction Stop }
                 catch { Write-Host "$($package.PackageFullName) was not installed on this user account." -ForegroundColor Yellow }
                 finally { Write-Host "Done with $($package.PackageFullName)." }
             }
         }
         Write-Host "Done with removing Appx Packages" -ForegroundColor Yellow
         foreach ( $package in $AppxProvisionedPackagesRemove ) {
-            try { $package | Remove-AppxProvisionedPackage -AllUsers -Online -ErrorAction Stop }
+            try { $package | Remove-AppxProvisionedPackage -AllUsers -Online | Out-Host -ErrorAction Stop }
             catch { Write-Host "$($package.PackageName) was not found on system." -ForegroundColor Yellow }
         }
         Write-Host "Done with removing Appx Provisioned Packages" -ForegroundColor Yellow

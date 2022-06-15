@@ -1,7 +1,7 @@
 #Requires -RunAsAdministrator
 
 #region finishing windows setup
-$scriptpath = "$PSScriptRoot\scripts\finishing_scripts"
+$scriptpath = "$PSScriptRoot\scripts"
 $scripts = @{
     "Adding cleanup scripts to task scheduler" = "cleanup_scripts_scheduler.ps1"
 }

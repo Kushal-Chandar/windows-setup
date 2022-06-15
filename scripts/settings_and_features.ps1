@@ -202,7 +202,7 @@ $Groups = @(
     'gazeInput'
     'humanInterfaceDevice'
     'location'
-    'microphone'
+    # 'microphone'
     'phoneCall'
     'phoneCallHistory'
     'picturesLibrary'
@@ -214,7 +214,7 @@ $Groups = @(
     'userDataTasks'
     'userNotificationListener'
     'videosLibrary'
-    'webcam'
+    # 'webcam'
     'wifiData'
     'wiFiDirect'
 )
@@ -242,33 +242,6 @@ If (!(Test-Path $Path)) {
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
 If (!(Test-Path $Path)) {
     New-Item -Path $Path -Force | Out-Null
-}
-#endregion
-
-#region Browser
-$Path = "HKLM:\SOFTWARE\Policies\Google\Chrome"
-If (!(Test-Path $Path)) {
-    New-Item -Path $Path  -Force | Out-Null
-}
-$Google = @{
-    'MetricsReportingEnabled'         = 0
-    'ChromeCleanupReportingEnabled'   = 0
-    'SubscribedContent-353696Enabled' = 0
-}
-foreach ($property in $Google.GetEnumerator()) {
-    New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
-}
-
-$Path = "HKLM:\SOFTWARE\Policies\Mozilla\Firefox"
-If (!(Test-Path $Path)) {
-    New-Item -Path $Path -Force | Out-Null
-}
-$FireFox = @{
-    "DisableTelemetry"           = 1
-    "DisableDefaultBrowserAgent" = 1
-}
-foreach ($property in $FireFox.GetEnumerator()) {
-    New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
 }
 #endregion
 
