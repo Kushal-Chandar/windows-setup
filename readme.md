@@ -32,7 +32,7 @@ winget -?
 winget install --id Git.Git -e -i --accept-source-agreements --accept-package-agreements
 ```
 
-#### Additional steps for me (Ignore)
+#### Additional steps for me (Others can ignore)
 
 - load winget and git configuration
 
