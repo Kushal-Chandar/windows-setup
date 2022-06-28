@@ -239,19 +239,22 @@ $AppsInitExecute.Add_Click({
 $MainWindow.ShowDialog() | Out-Null
     
 #region winget uninstall
-Get-Content "winget_uninstall_apps.json" | Set-Content "$env:Temp\winget_uninstall_apps_temp.json"
+$random_number = (Get-Date -DisplayHint Time).Ticks
+$filename = "$env:Temp\winget_uninstall_apps_temp_$random_number.json"
+Get-Content "winget_uninstall_apps.json" | Set-Content "$filename"
 try {
-    Start-Process notepad -ArgumentList "$env:Temp\winget_uninstall_apps_temp.json" -Wait -ErrorAction Stop
+    Start-Process notepad -ArgumentList "$filename" -Wait -ErrorAction Stop
 }
 catch {
     Write-Host "NotePad was not found. Try removing remaining packages manually with winget" -ForegroundColor Yellow
 }
-$WingetRemovePackages = ((Get-Content "$env:Temp\winget_uninstall_apps_temp.json" -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
+$WingetRemovePackages = ((Get-Content "$filename" -raw) -replace '(?m)(?<=^([^"]| "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/') | ConvertFrom-Json
 if ($WingetRemovePackages.Count -le 0) {
-    Write-Host "No Packages were found in $env:Temp\winget_uninstall_apps_temp.json" -ForegroundColor Yellow
+    Write-Host "No Packages were found in $filename" -ForegroundColor Yellow
 }
 else {
-    Write-Host "$($WingetRemovePackages.Count) packages were found $env:Temp\winget_uninstall_apps_temp.json."
+    Write-Host "$($WingetRemovePackages.Count) packages were found $filename."
+    $WingetRemovePackages | Out-Host
 }
 foreach ($package in $WingetRemovePackages) {
     winget uninstall --id "$package"

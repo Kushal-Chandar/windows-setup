@@ -1,40 +1,53 @@
-## What to do after a fresh install of windows
+<h1 align="center">Welcome to Windows-Setup👋</h1>
 
-### Prerequisites
+- [Prerequistes](#prerequistes)
+  - [Windows stuff](#windows-stuff)
+  - [Install winget](#install-winget)
+  - [Install Git](#install-git)
+- [Running the script](#running-the-script)
+  - [Run](#run)
+  - [Things to look out for](#things-to-look-out-for)
+- [End of setup](#end-of-setup)
+- [Export apps](#export-apps)
+- [Configure as required](#configure-as-required)
+- [Author](#author)
+- [Show your support](#show-your-support)
+- [📝 License](#📝-license)
 
-#### windows stuff
+## Prerequistes
 
-- Partition Disks C:(Windows) 150+GB, D:(Dev) 200GB+, P:(Programs) 100GB+, G:(Games) 400GB+
-- Do a windows update and some selective optional updates.
-- Powershell Set-executionpolicy to 'RemoteSigned'.
-  > Run windows powershell as admin and copy code from below
+### Windows stuff
+
+- Update windows (select optional updates from **view optional updates** section)
+- Powershell Set-Executionpolicy to 'RemoteSigned'.
 
 ```ps
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
 ```
 
-#### Install winget
+### Install winget
 
-- Update AppInstaller from Microsoft Store
-- Test winget
+Update _AppInstaller_ from Microsoft Store or install winget from github: [Latest release](https://github.com/microsoft/winget-cli/releases/latest). <br>
+
+Test winget
 
 ```ps
 winget -?
 ```
 
-- Install winget from github: <a href="https://github.com/microsoft/winget-cli/releases/latest">Latest release</a>
+### Install Git
 
-#### Install Git
-
-- Install git for windows
+- Install git for windows.
 
 ```ps
 winget install --id Git.Git -e -i --accept-source-agreements --accept-package-agreements
 ```
 
-#### Additional steps for me (Others can ignore)
+### !IGNORE THIS (Additional steps for me)
 
-- load winget and git configuration
+- Partition Disks C:(Windows) 150+GB, D:(Dev) 200GB+, P:(Programs) 100GB+, G:(Games) 400GB+.<br>
+- Install most of the programs in P: drive (except the few listed below)<br>
+- Load winget and git configurations. <br>
 
 ```ps
 cd ~
@@ -43,39 +56,67 @@ git clone "https://github.com/Kushal-Chandar/.dotfiles.git"
 ~\.dotfiles\git\deploy.ps1
 ```
 
-### Telemetery, Debloating and boot strapping
+## Running the script
 
-&nbsp;&nbsp;&nbsp;&nbsp;_Install git in its default path_<br>
-&nbsp;&nbsp;&nbsp;&nbsp;_Install powershell in its default path_<br>
-&nbsp;&nbsp;&nbsp;&nbsp;_Install Rest in P: drive_ -> use -i as -l is unreliable<br>
-&nbsp;&nbsp;&nbsp;&nbsp;_MSYS add to path_<br>
-&nbsp;&nbsp;&nbsp;&nbsp;_Prompt when installing google drive_<br>
+### Run
 
-- add host file (winows spyblocker ?)
-- restart pc
-- import trillium notes from google drive
+**Run the script in Windows Powershell (not the cross-platform version of Powershell).** <br>
 
-### Configuring windows terminal, vs code, nvim, git bash
+Run windows_setup.ps1 project root directory
 
-Make ps scripts to copy contents of these files from git hub (symlinks)<br>
-export import powertoys profile<br>
-
-# switch pc script
-
-export trillium notes
-launch google drive for sync
-run winget list and create a file of all programs if file not in list add it using a program; read winget_packages.json from any setup ; check if those packages exist in winget_install_apps.json and have corresponding value 0,1,2, edit file for new packages configuration to add configuration value
-
-### Gaming performance
-
-Do a motherboard bios update (if provided by manufacturer).<br>
-Do a graphics card bios update (if provided by manufacturer).<br>
-Do a graphics card driver update.<br>
-Download and configure throttlestop.<br>
-Download and configure msi.<br>
-Youtube pc optimisation guide (pc power plan editing).<br>
-Youtube guide for nvidia/amd control panel settings.<br>
-
+```ps
+# from the project directory
+.\windows_setup.ps1
 ```
 
+### Things to look out for
+
+- Install Git in its default path.
+- Install Microsoft powershell in its default path.
+
+## End of setup
+
+- Add MSYS2 to path. (if you have installed MSYS2)
+- Restart your pc.
+- Continue setup from .dotfiles repo (additional step for me)
+
+## Export apps
+
+Run export_apps.ps1 project root directory
+
+```ps
+# from the project directory
+.\export_apps.ps1
 ```
+
+## Configure as required (Basic powershell and XML can get you far)
+
+Run export_apps.ps1 project root directory to generate your winget_install_apps.json.<br>
+(configure all packages to 1, click the **Coding** button in the GUI to check mark those packages).<br>
+(configure all packages to 2, click the **KVM** button in the GUI to check mark those packages).<br>
+
+```ps
+# from the project directory
+.\export_apps.ps1
+```
+
+- While running the script.
+
+Select apps from appx packages from gui and Click **Save to File** to generate you apps_packeges_base.json and appx_provisioned_packages_base.json
+
+Fork this repo and clone your fork. Once you make changes and push the code to your forked-repo with your configuration. You can setup your windows to your liking with few clicks.
+
+## Author
+
+👤 **Kushal Chandar**
+
+- Github: [@Kushal-Chandar](https://github.com/Kushal-Chandar)
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2022 [Kushal Chandar](https://github.com/Kushal-Chandar).<br />
+This project is [MIT](project-source-dir/LICENSE.txt) licensed.

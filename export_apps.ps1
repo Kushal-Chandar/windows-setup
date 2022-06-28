@@ -1,3 +1,5 @@
+Add-Type -AssemblyName PresentationFramework # To Display AlertBoxes
+
 # region Winget Packages Export
 $random_number = (Get-Date -DisplayHint Time).Ticks
 $filename = "$env:Temp\apps_temp_$random_number.json"
@@ -16,4 +18,5 @@ $WingetPackagesAdd = @($WingetPackagesNew | Where-Object { $WingetPackagesExisti
 $WingetPackagesAdd | ForEach-Object { $WingetPackagesExistingJson | Add-Member -NotePropertyName $_ -NotePropertyValue 210 }
 "// | 0 = KVM | 1 = Coding and general gaming | 2 = Both | 210 = Undefined (need to set it manually) |`n" + ($WingetPackagesExistingJson | ConvertTo-Json) | Set-Content .\scripts\applications\winget_install_apps.json
 .\scripts\applications\winget_install_apps.json
+[System.Windows.MessageBox]::Show("Configure apps that are checked when clicked on Coding and KVM buttons`n`nChange all unconfigured apps with value '210' to the following values`n0 = KVM`n1 = Coding and general gaming`n")
 # endregion
