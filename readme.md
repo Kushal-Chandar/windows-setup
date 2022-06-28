@@ -1,5 +1,7 @@
 <h1 align="center">Welcome to Windows-Setup👋</h1>
 
+This script will make changes in the registry to change settings, add windows features (Hyper-V) and provide a GUI to remove windows bloatware.
+
 - [Prerequistes](#prerequistes)
   - [Windows stuff](#windows-stuff)
   - [Install winget](#install-winget)

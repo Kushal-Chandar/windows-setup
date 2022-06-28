@@ -2,18 +2,18 @@ Add-Type -AssemblyName PresentationFramework
 
 $AppxPackages = @(Get-AppxPackage -AllUsers | Where-Object { (($_.IsFramework) -ne $true) -and (($_.NonRemovable) -ne $true) } | Sort-Object -Property Name )  
 $AppxPackages | ForEach-Object { $_ | Add-Member -MemberType NoteProperty -Name "IsChecked" -Value $false }
-$AppxPackagesBase = Get-Content appx_packages_base.json | ConvertFrom-Json
+$AppxPackagesBase = Get-Content $PSScriptRoot\appx_packages_base.json | ConvertFrom-Json
 $AppxPackages | Where-Object { $AppxPackagesBase -Contains $_.Name } | ForEach-Object { $_.IsChecked = $true }
 
 $AppxProvisionedPackages = @(Get-AppxProvisionedPackage -Online | Sort-Object -Property DisplayName)
 $AppxProvisionedPackages | ForEach-Object { $_ | Add-Member -MemberType NoteProperty -Name "IsChecked" -Value $false }
-$AppxProvisionedPackagesBase = Get-Content appx_provisioned_packages_base.json | ConvertFrom-Json
+$AppxProvisionedPackagesBase = Get-Content $PSScriptRoot\appx_provisioned_packages_base.json | ConvertFrom-Json
 $AppxProvisionedPackages | Where-Object { $AppxProvisionedPackagesBase -Contains $_.DisplayName } | ForEach-Object { $_.IsChecked = $true }
 
-$WingetPackagesJson = (Get-Content "winget_install_apps.json" -raw) -replace '(?m)(?<=^([^"]|"[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
+$WingetPackagesJson = (Get-Content $PSScriptRoot\winget_install_apps.json -raw) -replace '(?m)(?<=^([^"] | "[^"]*")*)//.*' -replace '(?ms)/\*.*?\*/' | ConvertFrom-Json
 $WingetPackages = @($WingetPackagesJson.PSObject.Properties | Select-Object Name, Value)
 
-$inputXML = Get-Content "MainWindow.xaml"
+$inputXML = Get-Content $PSScriptRoot\MainWindow.xaml
 $inputXML = $inputXML -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window'
 [xml]$XAML = $inputXML
 $XAMLReader = New-Object System.Xml.XmlNodeReader $XAML
@@ -32,7 +32,7 @@ foreach ($AppxPackage in $AppxPackages) {
     $AppxPackagesStackPanelVisibility.Add($NewStackPanel)
     $NewInfoButton = New-Object  System.Windows.Controls.Button
     $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
-    $NewInfoButton.ToolTip = "Click for &quot;$AppxPackageDisplay&quot; package information"
+    $NewInfoButton.ToolTip = "Click for &quot; $AppxPackageDisplay&quot; package information"
     $NewInfoButton.Add_Click({
             $AppxPackageSerial = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([Management.Automation.PSSerializer]::Serialize($AppxPackage)))
             $Command = {
@@ -42,7 +42,7 @@ foreach ($AppxPackage in $AppxPackages) {
                 Write-Host "Close this window manually or press _Enter_ to close window"
                 Read-Host
             }
-            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & {$Command}", "-AppxPackageSerial ""$AppxPackageSerial"""
+            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & { $Command }", "-AppxPackageSerial ""$AppxPackageSerial"""
         }.GetNewClosure())
     $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
     $NewCheckBox.IsChecked = ($AppxPackages[$CounterAppx]).IsChecked
@@ -67,7 +67,7 @@ foreach ($AppxProvisionedPackage in $AppxProvisionedPackages) {
     $AppxProvisionedPackagesStackPanelVisibility.Add($NewStackPanel)
     $NewInfoButton = New-Object  System.Windows.Controls.Button
     $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
-    $NewInfoButton.ToolTip = "Click for &quot;$($AppxProvisionedPackage.DisplayName)&quot; package information"
+    $NewInfoButton.ToolTip = "Click for &quot; $($AppxProvisionedPackage.DisplayName)&quot; package information"
     $NewInfoButton.Add_Click({
             $AppxProvisionedPackageSerial = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes([Management.Automation.PSSerializer]::Serialize($AppxProvisionedPackage)))
             $Command = {
@@ -77,7 +77,7 @@ foreach ($AppxProvisionedPackage in $AppxProvisionedPackages) {
                 Write-Host "Close this window manually or press _Enter_ to close window"
                 Read-Host
             }
-            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & {$Command}", "-AppxProvisionedPackageSerial ""$AppxProvisionedPackageSerial"""
+            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & { $Command }", "-AppxProvisionedPackageSerial ""$AppxProvisionedPackageSerial"""
         }.GetNewClosure())
     $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
     $NewCheckBox.IsChecked = ($AppxProvisionedPackages[$CounterAppxProvisioned]).IsChecked
@@ -100,7 +100,7 @@ foreach ($WingetPackage in $WingetPackages) {
     $NewStackPanel.Orientation = "Horizontal"
     $NewInfoButton = New-Object  System.Windows.Controls.Button
     $NewInfoButton.Style = $MainWindow.TryFindResource("AppsInit.InfoButtonStyle")
-    $NewInfoButton.ToolTip = "Click for &quot;$($WingetPackage.Name)&quot; package information"
+    $NewInfoButton.ToolTip = "Click for &quot; $($WingetPackage.Name)&quot; package information"
     $NewInfoButton.Add_Click({
             $Command = {
                 Param($WingetPackageId)
@@ -108,7 +108,7 @@ foreach ($WingetPackage in $WingetPackages) {
                 Write-Host "`n`nClose this window manually or press _Enter_ to close window"
                 Read-Host
             }
-            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & {$Command}", "-WingetPackageId ""$($WingetPackage.Name)"""
+            Start-Process PowerShell -ArgumentList "-NoLogo -NoProfile", "-Command & { $Command }", "-WingetPackageId ""$($WingetPackage.Name)"""
         }.GetNewClosure())
     $NewCheckBox = New-Object  System.Windows.Controls.CheckBox
     $NewCheckBox.Cursor = "Hand"
@@ -139,7 +139,7 @@ $AppsInitSaveAppxPackagestoFile.Add_Click({
         }
         $AppxPackagesBase | ForEach-Object { $AppxPackagesRemoveFile.Add($_) }
         $AppxJson = @($AppxPackagesRemoveFile.ToArray() | Sort-Object -Unique) # No piping generation null object for array with no elements -> No array?
-        ConvertTo-Json $AppxJson | Set-Content -Path appx_packages_base.json
+        ConvertTo-Json $AppxJson | Set-Content -Path $PSScriptRoot\appx_packages_base.json
     })
     
 $Script:AppxProvisionedCheckBoxesState = $true
@@ -159,7 +159,7 @@ $AppsInitSaveAppxProvisionedPackagestoFile.Add_Click({
         }
         $AppxProvisionedPackagesBase | ForEach-Object { $AppxProvisionedPackagesRemoveFile.Add($_) }
         $AppxProvisionedJson = @($AppxProvisionedPackagesRemoveFile.ToArray() | Sort-Object -Unique)
-        ConvertTo-Json $AppxProvisionedJson | Set-Content -Path appx_provisioned_packages_base.json
+        ConvertTo-Json $AppxProvisionedJson | Set-Content -Path $PSScriptRoot\appx_provisioned_packages_base.json
     })
     
 $AppsInitKVM.Add_Click({
@@ -241,7 +241,7 @@ $MainWindow.ShowDialog() | Out-Null
 #region winget uninstall
 $random_number = (Get-Date -DisplayHint Time).Ticks
 $filename = "$env:Temp\winget_uninstall_apps_temp_$random_number.json"
-Get-Content "winget_uninstall_apps.json" | Set-Content "$filename"
+Get-Content $PSScriptRoot\winget_uninstall_apps.json | Set-Content "$filename"
 try {
     Start-Process notepad -ArgumentList "$filename" -Wait -ErrorAction Stop
 }
