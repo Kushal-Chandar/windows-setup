@@ -1,11 +1,9 @@
+// | 0 = KVM | 1 = Coding and general gaming | 2 = Both | 210 = Undefined (need to set it manually) |
 {
-  // 0 - KVM
-  // 1 - Coding and general gaming
-  // 2 - Both
   "7zip.7zip": 2,
   "BraveSoftware.BraveBrowser": 1,
   "Discord.Discord": 1,
-  "Git.Git": 1,
+  "Git.Git": 2,
   "Google.Chrome": 1,
   "Greenshot.Greenshot": 1,
   "Microsoft.Edge": 1,
@@ -42,5 +40,6 @@
   "msys2.msys2": 1,
   "Microsoft.VC++2012Redist-x64": 2,
   "Microsoft.PowerToys": 2,
-  "9WZDNCRFHVJL": 1
+  "9WZDNCRFHVJL": 1,
+  "WindscribeLimited.Windscribe": 2
 }
