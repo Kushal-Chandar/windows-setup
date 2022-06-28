@@ -18,13 +18,13 @@ This script will make changes in the registry to change settings, add windows fe
 
 ## Prerequistes
 
-### Windows stuff
+### Priming windows
 
 - Update windows (select optional updates from **view optional updates** section)
 - Powershell Set-Executionpolicy to 'RemoteSigned'.
 
 ```ps
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 ```
 
 ### Install winget
@@ -98,6 +98,8 @@ Run export_apps.ps1 project root directory
 # from the project directory
 .\export_apps.ps1
 ```
+
+This will generate winget_install_apps.json in PROJECT_ROOT_DIR/scripts/applications. You can edit the file to configure which checkboxes are checked when these GUI buttons are clicked - Coding(1) or KVM(0)
 
 ## Configure as required
 
