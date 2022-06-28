@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to Windows-Setup👋</h1>
 
-This script will make changes in the registry to change settings, add windows features (Hyper-V) and provide a GUI to remove windows bloatware.
+This script will make changes in the registry to change settings, add windows features (Hyper-V, WSL and Windows Sandbox (Windows Pro only)) and provide a GUI to remove windows bloatware.
 
 - [Prerequistes](#prerequistes)
   - [Windows stuff](#windows-stuff)
@@ -60,6 +60,14 @@ git clone "https://github.com/Kushal-Chandar/.dotfiles.git"
 
 ## Running the script
 
+### Clone the repository
+
+This script is portable. Clone to any folder in your computer.
+
+```sh
+git clone https://github.com/Kushal-Chandar/Windows-Setup.git
+```
+
 ### Run
 
 **Run the script in Windows Powershell (not the cross-platform version of Powershell).** <br>
@@ -80,7 +88,7 @@ Run windows_setup.ps1 project root directory
 
 - Add MSYS2 to path. (if you have installed MSYS2)
 - Restart your pc.
-- Continue setup from .dotfiles repo (additional step for me)
+- Continue setup from .dotfiles repository (additional step for me)
 
 ## Export apps
 
@@ -91,7 +99,9 @@ Run export_apps.ps1 project root directory
 .\export_apps.ps1
 ```
 
-## Configure as required (Basic powershell and XML can get you far)
+## Configure as required
+
+(Basic powershell and XML can get you far)
 
 Run export_apps.ps1 project root directory to generate your winget_install_apps.json.<br>
 (configure all packages to 1, click the **Coding** button in the GUI to check mark those packages).<br>
@@ -106,7 +116,7 @@ Run export_apps.ps1 project root directory to generate your winget_install_apps.
 
 Select apps from appx packages from gui and Click **Save to File** to generate you apps_packeges_base.json and appx_provisioned_packages_base.json
 
-Fork this repo and clone your fork. Once you make changes and push the code to your forked-repo with your configuration. You can setup your windows to your liking with few clicks.
+Fork this repository and clone your fork. Once you make changes and push the code to your forked-repository with your configuration. You can setup your windows to your liking with few clicks.
 
 ## Author
 
