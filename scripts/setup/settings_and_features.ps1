@@ -40,7 +40,6 @@ New-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" 
 Add-RegistryFolderForced -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "HideSCAMeetNow" -PropertyType DWord -Value 1 -Force | Out-Null
 Add-RegistryFolderForced -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-
 New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoRecentDocsHistory" -PropertyType DWord -Value 1 -Force | Out-Null
 #endregion
 
@@ -98,7 +97,6 @@ New-ItemProperty -Path $Path -Type DWord -Name "EnableStickers" -Value 0 -Force 
 #region Hibernation
 New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Power" -Name "HibernteEnabled" -PropertyType Dword -Value 0 -Force | Out-Null
 Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings"
-
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowHibernateOption" -PropertyType Dword -Value 0 -Force | Out-Null
 #endregion
 
@@ -212,7 +210,6 @@ $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
 Add-RegistryFolderForced -Path $Path
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
 Add-RegistryFolderForced -Path $Path
-
 #endregion
 
 Stop-Process -processName: Explorer
