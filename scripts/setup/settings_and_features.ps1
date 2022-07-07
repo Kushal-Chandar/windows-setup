@@ -1,3 +1,12 @@
+function Add-RegistryFolderForced {
+    param ($path)
+    If (!(Test-Path -Path $path)) {
+        New-Item -Path $path -Force | Out-Null
+    }   
+}
+
+###main()###
+
 Add-Type -AssemblyName PresentationFramework # To Display AlertBoxes
 
 #region Explorer
@@ -17,37 +26,26 @@ $Explorer = @{
 foreach ($property in $Explorer.GetEnumerator()) {
     New-Itemproperty -Path $Path -Name $($property.Name) -PropertyType DWord -Value $($property.Value) -Force | Out-Null
 }
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\OperationStatusManager" -Name "EnthusiastMode" -PropertyType DWord -Value 1 -Force | Out-Null
 #endregion
 
 #region TaskBar
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Name "PeopleBand" -PropertyType DWord -Value 0 -Force | Out-Null
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -PropertyType Dword -Value 0 -Force | Out-Null
-If (!(Test-Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds")) {
-    New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" -Name "EnableFeeds" -PropertyType DWord -Value 0 -Force | Out-Null
 New-ItemProperty -Path  "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" -Name "ShellFeedsTaskbarViewMode" -PropertyType DWord -Value 2 -Force | Out-Null
-If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
-    New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "HideSCAMeetNow" -PropertyType DWord -Value 1 -Force | Out-Null
-If (!(Test-Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
-    New-Item -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+
 New-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoRecentDocsHistory" -PropertyType DWord -Value 1 -Force | Out-Null
 #endregion
 
 #region Widgets
-If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Dsh")) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Dsh"
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Dsh" -Name "AllowNewsAndInterests" -PropertyType DWord -Value 0 -Force | Out-Null
 #endregion
 
@@ -93,32 +91,24 @@ foreach ($property in $Mouse.GetEnumerator()) {
 New-Itemproperty -Path "HKCU:\Control Panel\Desktop" -Name "MenuShowDelay" -PropertyType String -Value 0 -Force | Out-Null
 New-Itemproperty -Path "HKCU:\Control Panel\Desktop" -Name "AutoColorization" -PropertyType DWord -Value 0 -Force | Out-Null
 $Path = "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Stickers"
-If (!(Test-Path $Path)) {
-    New-Item -Path $Path -Force | Out-Null
-    
-}
+Add-RegistryFolderForced -Path $Path
 New-ItemProperty -Path $Path -Type DWord -Name "EnableStickers" -Value 0 -Force | Out-Null
 #endregion
 
 #region Hibernation
 New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Session Manager\Power" -Name "HibernteEnabled" -PropertyType Dword -Value 0 -Force | Out-Null
-If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings")) {
-    New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings"
+
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FlyoutMenuSettings" -Name "ShowHibernateOption" -PropertyType Dword -Value 0 -Force | Out-Null
 #endregion
 
 #region Privacy Settings
-If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization")) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization"
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -PropertyType DWord -Value 1 -Force | Out-Null
 Set-WindowsSearchSetting -EnableWebResultsSetting $false
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsDeviceSearchHistoryEnabled" -PropertyType DWord -Value 0 -Force | Out-Null
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsDynamicSearchBoxEnabled" -PropertyType DWord -Value 0 -Force | Out-Null
-If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer"
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "ShowOrHideMostUsedApps" -PropertyType DWord -Value 2 -Force | Out-Null
 Start-Process ms-settings:personalization-start #disable apps displayed in recommended section
 [System.Windows.MessageBox]::Show("Disable: Show recently added apps.`n`nClicking `"OK`" will continue the script") | Out-Null
@@ -127,17 +117,11 @@ Start-Process ms-settings:personalization-start-places
 Start-Process ms-settings:search-permissions
 [System.Windows.MessageBox]::Show("Disable items under `"Cloud content search`"`n`nDisable: Microsoft Account.`nDisable: Work or School Account.`n`nClicking `"OK`" will continue the script") | Out-Null
 New-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -PropertyType DWord -Value 1 -Force | Out-Null
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC" -Name "Enabled" -PropertyType DWord -Value 0 -Force | Out-Null
-If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"  -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" 
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -PropertyType DWord -Value 0 -Force | Out-Null
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
 $Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
 $SettingSync = @{
     'BackupPolicy'           = 0x3c
@@ -159,19 +143,13 @@ $Groups = @(
     'StartLayout'
     'Windows'
 )
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups"
 foreach ($Group in $Groups) {
     $GroupPath = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync\Groups\" + $Group
-    If (!(Test-Path $GroupPath)) {
-        New-Item -Path $GroupPath -Force | Out-Null
-    }
+    Add-RegistryFolderForced -Path $GroupPath
     New-ItemProperty -Path $GroupPath -Name "Enabled" -PropertyType DWord -Value 0 -Force | Out-Null
 }
-If (!(Test-Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings")) {
-    New-Item -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Personalization\Settings" -Name "AcceptedPrivacyPolicy" -PropertyType DWord -Value 0 -Force | Out-Null
 $Path = "HKCU:\SOFTWARE\Microsoft\InputPersonalization"
 $InputPersonalization = @{
@@ -220,29 +198,21 @@ $Groups = @(
 )
 foreach ($Group in $Groups) {
     $GroupPath = $Path + $Group
-    If (!(Test-Path $GroupPath)) {
-        New-Item -Path $GroupPath -Force | Out-Null
-    }
+    Add-RegistryFolderForced -Path $GroupPath
     New-ItemProperty -Path $GroupPath -Name "Value" -PropertyType String -Value "Deny" -Force | Out-Null
 }
 New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -PropertyType DWord -Value 0 -Force | Out-Null
 New-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0 -Force | Out-Null
-
-If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore")) {
-    New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Force | Out-Null
-}
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore"
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsStore" -Type DWord -Name "AutoDownload" -Value 2 -Force | Out-Null  # prevents auto update
 #endregion
 
 #region Classic Context Menu
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}"
-If (!(Test-Path $Path)) {
-    New-Item -Path $Path -Force | Out-Null
-}
+Add-RegistryFolderForced -Path $Path
 $Path = "HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32"
-If (!(Test-Path $Path)) {
-    New-Item -Path $Path -Force | Out-Null
-}
+Add-RegistryFolderForced -Path $Path
+
 #endregion
 
 Stop-Process -processName: Explorer
