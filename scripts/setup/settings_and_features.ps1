@@ -215,8 +215,8 @@ Add-RegistryFolderForced -Path $Path
 Stop-Process -processName: Explorer
 
 #region Features
-Remove-Printer -Name Fax
-Disable-WindowsOptionalFeature -Online -FeatureName "Printing-XPSServices-Features" -NoRestart -WarningAction SilentlyContinue | Out-Null
+Remove-Printer -Name Fax -ErrorAction SilentlyContinue
+Disable-WindowsOptionalFeature -Online -FeatureName "Printing-XPSServices-Features" -NoRestart -ErrorAction SilentlyContinue
 $features = @(
     'Microsoft-Hyper-V-All'
     'Microsoft-Hyper-V-Tools-All'

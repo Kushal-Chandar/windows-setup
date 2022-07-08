@@ -86,7 +86,8 @@ Run windows_setup.ps1 project root directory
 
 ## End of setup
 
-- Add MSYS2 to path. (if you have installed MSYS2)
+- Add MSYS2 to path. (if installed)
+- Add Neovim to path. (if installed)
 - Restart your pc.
 - Continue setup from .dotfiles repository (additional step for me)
 
