@@ -2,6 +2,7 @@
 
 This script will make changes in the registry to change settings, add windows features (Hyper-V, WSL and Windows Sandbox (Windows Pro only)) and provide a GUI to remove windows bloatware.
 
+- [Things that might break](#things-that-might-break)
 - [Prerequistes](#prerequistes)
   - [Windows stuff](#windows-stuff)
   - [Install winget](#install-winget)
@@ -15,6 +16,12 @@ This script will make changes in the registry to change settings, add windows fe
 - [Author](#author)
 - [Show your support](#show-your-support)
 - [📝 License](#📝-license)
+
+## Things that might break
+
+- Windows search -> alternative(powertoys run)
+
+You can revert the changes made by this script by using system restore. Restore using the restore point named "Before windows-setup was run"
 
 ## Prerequistes
 
