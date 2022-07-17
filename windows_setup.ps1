@@ -4,7 +4,8 @@
 $scriptpath = "$PSScriptRoot\scripts\"
 
 & $scriptpath\"setup\system_restore_configuration.ps1"
-Checkpoint-Computer -Description "Before windows-setup was run" -RestorePointType "MODIFY_SETTINGS" | Out-Null
+$description = "Before windows-setup was run on " + (Get-Date -Format "dd-MM-yyyy HH:mm")
+Checkpoint-Computer -Description $description -RestorePointType "MODIFY_SETTINGS" | Out-Null
 Get-ComputerRestorePoint
 
 $scripts = @{
