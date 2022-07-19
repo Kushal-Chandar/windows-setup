@@ -2,7 +2,7 @@ function Add-RegistryFolderForced {
     param ($path)
     If (!(Test-Path -Path $path)) {
         New-Item -Path $path -Force | Out-Null
-    }   
+    }
 }
 
 ###main()###
@@ -117,7 +117,7 @@ Start-Process ms-settings:search-permissions
 New-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "HttpAcceptLanguageOptOut" -PropertyType DWord -Value 1 -Force | Out-Null
 Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC"
 New-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Input\TIPC" -Name "Enabled" -PropertyType DWord -Value 0 -Force | Out-Null
-Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" 
+Add-RegistryFolderForced -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search"
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -PropertyType DWord -Value 0 -Force | Out-Null
 Add-RegistryFolderForced -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"
 $Path = "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\SettingSync"

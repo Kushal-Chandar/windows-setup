@@ -4,10 +4,12 @@ This script will make changes in the registry to change settings, add windows fe
 
 - [Things that might break](#things-that-might-break)
 - [Prerequistes](#prerequistes)
-  - [Windows stuff](#windows-stuff)
+  - [Priming windows](#priming-windows)
   - [Install winget](#install-winget)
   - [Install Git](#install-git)
+  - [!IGNORE THIS (Additional steps for me)](#ignore-this-additional-steps-for-me)
 - [Running the script](#running-the-script)
+  - [Clone the repository](#clone-the-repository)
   - [Run](#run)
   - [Things to look out for](#things-to-look-out-for)
 - [End of setup](#end-of-setup)
@@ -15,7 +17,7 @@ This script will make changes in the registry to change settings, add windows fe
 - [Configure as required](#configure-as-required)
 - [Author](#author)
 - [Show your support](#show-your-support)
-- [📝 License](#📝-license)
+- [📝 License](#-license)
 
 ## Things that might break
 
@@ -36,7 +38,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
 
 ### Install winget
 
-Update _AppInstaller_ from Microsoft Store or install winget from github: [Latest release](https://github.com/microsoft/winget-cli/releases/latest). <br>
+Update _AppInstaller_ from Microsoft Store or install winget from github: [Latest release](https://github.com/microsoft/winget-cli/releases/latest).<br>
 
 Test winget
 
@@ -55,8 +57,8 @@ winget install --id Git.Git -e -i --accept-source-agreements --accept-package-ag
 ### !IGNORE THIS (Additional steps for me)
 
 - Partition Disks C:(Windows) 150+GB, D:(Dev) 200GB+, P:(Programs) 100GB+, G:(Games) 400GB+.<br>
-- Install most of the programs in P: drive (except the few listed below)<br>
-- Load winget and git configurations. <br>
+- Install most of the programs in P: drive (except the few listed below).<br>
+- Load winget and git configurations.<br>
 
 ```ps
 cd ~
@@ -77,7 +79,7 @@ git clone https://github.com/Kushal-Chandar/Windows-Setup.git
 
 ### Run
 
-**Run the script in Windows Powershell (not the cross-platform version of Powershell).** <br>
+**Run the script in Windows Powershell (not the cross-platform version of Powershell).**<br>
 
 Run windows_setup.ps1 project root directory
 

@@ -1,6 +1,6 @@
 Add-Type -AssemblyName PresentationFramework
 
-$AppxPackages = @(Get-AppxPackage -AllUsers | Where-Object { (($_.IsFramework) -ne $true) -and (($_.NonRemovable) -ne $true) } | Sort-Object -Property Name )  
+$AppxPackages = @(Get-AppxPackage -AllUsers | Where-Object { (($_.IsFramework) -ne $true) -and (($_.NonRemovable) -ne $true) } | Sort-Object -Property Name )
 $AppxPackages | ForEach-Object { $_ | Add-Member -MemberType NoteProperty -Name "IsChecked" -Value $false }
 $AppxPackagesBase = Get-Content $PSScriptRoot\appx_packages_base.json | ConvertFrom-Json
 $AppxPackages | Where-Object { $AppxPackagesBase -Contains $_.Name } | ForEach-Object { $_.IsChecked = $true }
@@ -129,7 +129,7 @@ $AppsInitCheckAppxApps.Add_Click({
         }
         $Script:AppxCheckBoxesState = -not $AppxCheckBoxesState
     })
-    
+
 $AppsInitSaveAppxPackagestoFile.Add_Click({
         $AppxPackagesRemoveFile = New-Object System.Collections.Generic.List[System.Object]
         for ($i = 0; $i -lt $AppxPackagesCheckBoxes.Count; $i++) {
@@ -141,7 +141,7 @@ $AppsInitSaveAppxPackagestoFile.Add_Click({
         $AppxJson = @($AppxPackagesRemoveFile.ToArray() | Sort-Object -Unique) # No piping generation null object for array with no elements -> No array?
         ConvertTo-Json $AppxJson | Set-Content -Path $PSScriptRoot\appx_packages_base.json
     })
-    
+
 $Script:AppxProvisionedCheckBoxesState = $true
 $AppsInitCheckAppxProvisionedApps.Add_Click({
         foreach ($CheckBox in $AppxProvisionedPackagesCheckBoxes) {
@@ -149,7 +149,7 @@ $AppsInitCheckAppxProvisionedApps.Add_Click({
         }
         $Script:AppxProvisionedCheckBoxesState = -not $AppxProvisionedCheckBoxesState
     })
-    
+
 $AppsInitSaveAppxProvisionedPackagestoFile.Add_Click({
         $AppxProvisionedPackagesRemoveFile = New-Object System.Collections.Generic.List[System.Object]
         for ($i = 0; $i -lt $AppxProvisionedPackagesCheckBoxes.Count; $i++) {
@@ -161,7 +161,7 @@ $AppsInitSaveAppxProvisionedPackagestoFile.Add_Click({
         $AppxProvisionedJson = @($AppxProvisionedPackagesRemoveFile.ToArray() | Sort-Object -Unique)
         ConvertTo-Json $AppxProvisionedJson | Set-Content -Path $PSScriptRoot\appx_provisioned_packages_base.json
     })
-    
+
 $AppsInitKVM.Add_Click({
         for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
             if (($WingetPackages[$i].Value -eq 0) -or ($WingetPackages[$i].Value -eq 2)) {
@@ -169,7 +169,7 @@ $AppsInitKVM.Add_Click({
             }
         }
     })
-    
+
 $AppsInitCoding.Add_Click({
         for ($i = 0; $i -lt $WingetPackages.Count; $i++) {
             if (($WingetPackages[$i].Value -eq 1) -or ($WingetPackages[$i].Value -eq 2)) {
@@ -188,7 +188,7 @@ $AppsInitExecute.Add_Click({
         $AppxPackagesRemove = New-Object System.Collections.Generic.List[System.Object]
         $AppxProvisionedPackagesRemove = New-Object System.Collections.Generic.List[System.Object]
         $WingetPackagesInstall = New-Object System.Collections.Generic.List[System.Object]
-        
+
         for ($i = 0; $i -lt $AppxPackagesCheckBoxes.Count; $i++) {
             if ($AppxPackagesCheckBoxes[$i].IsChecked -eq $true) {
                 $AppxPackagesRemove.Add($AppxPackages[$i])
@@ -196,7 +196,7 @@ $AppsInitExecute.Add_Click({
                 $AppxPackagesCheckBoxes[$i].IsChecked = $false
             }
         }
-        
+
         for ($i = 0; $i -lt $AppxProvisionedPackagesCheckBoxes.Count; $i++) {
             if ($AppxProvisionedPackagesCheckBoxes[$i].IsChecked -eq $true) {
                 $AppxProvisionedPackagesRemove.Add($AppxProvisionedPackages[$i])
@@ -211,13 +211,13 @@ $AppsInitExecute.Add_Click({
                 $WingetPackagesCheckBoxes[$i].IsChecked = $false
             }
         }
-        
+
         foreach ( $package in $AppxPackagesRemove ) {
             Write-Host "Trying to remove $($package.PackageFullName)"
             Set-NonRemovableAppsPolicy -Online -PackageFamilyName $package.PackageFamilyName -NonRemovable 0 | Out-Host
             try { $package | Remove-AppxPackage -AllUsers | Out-Host -ErrorAction Stop }
             catch { Get-AppxPackage -PackageTypeFilter Main, Bundle, Resource -AllUsers | Where-Object { $_.Name -eq $package.Name }  | Remove-AppxPackage -Allusers | Out-Host }
-            finally { 
+            finally {
                 try { $package | Remove-AppxPackage | Out-Host -ErrorAction Stop }
                 catch { Write-Host "$($package.PackageFullName) was not installed on this user account." -ForegroundColor Yellow }
                 finally { Write-Host "Done with $($package.PackageFullName)." }
@@ -235,9 +235,9 @@ $AppsInitExecute.Add_Click({
         Write-Host "Done with install Winget Packages" -ForegroundColor Yellow
     })
 
-    
+
 $MainWindow.ShowDialog() | Out-Null
-    
+
 #region winget uninstall
 $random_number = (Get-Date -DisplayHint Time).Ticks
 $filename = "$env:Temp\winget_uninstall_apps_temp_$random_number.json"
