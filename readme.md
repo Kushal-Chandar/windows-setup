@@ -23,7 +23,7 @@ This script will make changes in the registry to change settings, add windows fe
 
 - Windows search -> alternative(powertoys run)
 
-You can revert the changes made by this script by using system restore. Restore using the restore point named "Before windows-setup was run"
+You can revert the changes made by this script by using system restore. Restore using the restore point named "Before windows-setup was run (date and time)"
 
 ## Prerequistes
 
@@ -79,13 +79,13 @@ git clone https://github.com/Kushal-Chandar/Windows-Setup.git
 
 ### Run
 
-**Run the script in Windows Powershell (not the cross-platform version of Powershell).**<br>
+**This script will launch in any powershell terimal but you need to have 'Windows Powershell' for all features**<br>
 
 Run windows_setup.ps1 project root directory
 
 ```ps
 # from the project directory
-.\windows_setup.ps1
+.\launch.ps1
 ```
 
 ### Things to look out for

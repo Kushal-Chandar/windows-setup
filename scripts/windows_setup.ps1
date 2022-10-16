@@ -1,7 +1,5 @@
-#Requires -RunAsAdministrator
-
 #region bootstrap windows
-$scriptpath = "$PSScriptRoot\scripts\"
+$scriptpath = "$PSScriptRoot\"
 
 & $scriptpath\"setup\system_restore_configuration.ps1"
 $description = "Before windows-setup was run on " + (Get-Date -Format "dd-MM-yyyy HH:mm")
