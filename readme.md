@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Windows-Setup👋</h1>
+<h1 align="center">Welcome to windows-setup👋</h1>
 
 This script will make changes in the registry to change settings, add windows features (Hyper-V, WSL and Windows Sandbox (Windows Pro only)) and provide a GUI to remove windows bloatware.
 
