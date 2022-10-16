@@ -41,5 +41,21 @@
   "Microsoft.VC++2012Redist-x64": 2,
   "Microsoft.PowerToys": 2,
   "9WZDNCRFHVJL": 1,
-  "WindscribeLimited.Windscribe": 2
+  "WindscribeLimited.Windscribe": 2,
+  "OpenWhisperSystems.Signal": 1,
+  "Brave.Brave": 1,
+  "Canonical.Ubuntu": 1,
+  "Docker.DockerDesktop": 1,
+  "ChristianSchenk.MiKTeX": 1,
+  "Microsoft.VCRedist.2013.x64": 2,
+  "Microsoft.VCRedist.2010.x64": 2,
+  "Microsoft.VCRedist.2012.x86": 2,
+  "Microsoft.VCRedist.2015+.x86": 2,
+  "Microsoft.VCRedist.2005.x86": 2,
+  "Microsoft.DotNet.Runtime.6": 1,
+  "Microsoft.VCRedist.2013.x86": 2,
+  "Microsoft.VCRedist.2010.x86": 2,
+  "Microsoft.VCRedist.2015+.x64": 2,
+  "Microsoft.VCRedist.2012.x64": 2,
+  "Microsoft.DotNet.DesktopRuntime.6": 1
 }
